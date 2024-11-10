@@ -195,4 +195,3 @@ while(game_in_progress):
         board_setup = True
     print_board(board)
     main()
-    # game_in_progress = False
