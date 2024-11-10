@@ -180,6 +180,7 @@ def main():
             selected_col = int(selected_col)
             while selected_col not in range(1, len(board[0]) + 1):
                 selected_col = int(input("Invalid entry. Enter the slot's column number: "))
+            break
         except ValueError:
             print("Only enter a number.")
 
