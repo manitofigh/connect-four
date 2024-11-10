@@ -174,9 +174,14 @@ def main():
     else:
         print(f"{RED}{player[player_turn]}{RESET}'s turn.")
 
-    selected_col = int(input("Enter the slot's column number: ")) # [!] 1-indexed
-    while selected_col not in range(1, len(board[0]) + 1):
-        selected_col = int(input("Invalid entry. Enter the slot's column number: "))
+    while True:
+        selected_col = input("Enter the slot's column number: ") # [!] 1-indexed
+        try:
+            selected_col = int(selected_col)
+            while selected_col not in range(1, len(board[0]) + 1):
+                selected_col = int(input("Invalid entry. Enter the slot's column number: "))
+        except ValueError:
+            print("Only enter a number.")
 
     update_board(selected_col, player_turn)
 
