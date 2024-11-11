@@ -1,5 +1,6 @@
 # WARNING: the terminal cleaning is only implemented for the macos terminal. Needs check on windows.
 import os # to clean the terminal screen
+from time import sleep
 
 GREEN = '\033[92m' # for x
 RED = '\033[91m' # for o
@@ -47,14 +48,27 @@ def update_board(col, turn):
     if board[0][col] == ' ':
         for i in range(len(board) - 1, -1, -1):
             if board[i][col] == ' ':
-                if turn == 0:
-                    cur_chosen_row = i
-                    board[cur_chosen_row][col] = 'x'
-                    break
-                else:
-                    cur_chosen_row = i
-                    board[cur_chosen_row][col] = 'o'
-                    break
+                cur_chosen_row = i
+                break
+
+        # Falling animation
+        for j in range(0, cur_chosen_row):
+            if turn == 0:
+                board[j][col] = 'x'
+                print_board(board)
+                sleep(0.1)
+                board[j][col] = ' '
+            else:
+                board[j][col] = 'o'
+                print_board(board)
+                sleep(0.1)
+                board[j][col] = ' '
+
+        if turn == 0:
+            board[cur_chosen_row][col] = 'x'
+        else:
+            board[cur_chosen_row][col] = 'o'
+
     else:
         print(f"{ORANGE}[!]{RESET} Column already full. Cannot insert.")
         # since main() is gonna flip the player turn, we do it once prior so that it undos it.
