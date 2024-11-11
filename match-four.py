@@ -9,7 +9,6 @@ RESET = '\033[0m'
 
 # game board arr: [[], [], [], ...] -> each [] being a row
 # we only want to set it up once in main(). If set up more, it would override vals to []
-board_setup = False 
 def setup_board(row_num, col_num):
     global board
     board = [[] for i in range(row_num)]
@@ -24,7 +23,8 @@ def print_board(board_array):
         print(f"| [{i+1}] ", end="")
     print("|")
 
-    print("|-----------------------------------------|")
+    separator = "|" + "-" * (6*n_cols - 1) + "|"
+    print(separator)
     for i in board: # each row
         for j in i: # each column of each row
             if j == 'x':
@@ -32,7 +32,7 @@ def print_board(board_array):
             else:
                 print(f"| [{RED}{j}{RESET}] ", end="")
         print(f"|") # for the closing of each row
-    print("|-----------------------------------------|")
+    print(separator)
     print()
 
 def show_win(player_turn):
@@ -56,12 +56,12 @@ def update_board(col, turn):
             if turn == 0:
                 board[j][col] = 'x'
                 print_board(board)
-                sleep(0.1)
+                sleep(0.05)
                 board[j][col] = ' '
             else:
                 board[j][col] = 'o'
                 print_board(board)
-                sleep(0.1)
+                sleep(0.05)
                 board[j][col] = ' '
         # end - falling animation
 
@@ -203,12 +203,25 @@ def main():
 
     update_board(selected_col, player_turn)
 
-
+board_setup = False 
 game_in_progress = True
+global n_cols
 while (game_in_progress):
-
     if not board_setup:
-        setup_board(6, 7)
+        while True:
+            try:
+                n_rows = int(input("How many rows for the board? (min 4, max 9)"))
+                while n_rows < 4 or n_rows > 9:
+                    n_rows = int(input("How many rows for the board? (min 4, max 9)"))
+
+                n_cols = int(input("How many columns for the board? (min 4, max 9)"))
+                while n_cols < 4 or n_cols > 9:
+                    n_cols = int(input("How many columns for the board? (min 4, max 9)"))
+
+                break
+            except ValueError:
+                print("Only enter numbers.")
+        setup_board(n_rows, n_cols)
         board_setup = True
     print_board(board)
     main()
