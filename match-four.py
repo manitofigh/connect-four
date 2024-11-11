@@ -63,6 +63,7 @@ def update_board(col, turn):
                 print_board(board)
                 sleep(0.1)
                 board[j][col] = ' '
+        # end - falling animation
 
         if turn == 0:
             board[cur_chosen_row][col] = 'x'
