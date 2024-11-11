@@ -162,9 +162,11 @@ def update_board(col, turn):
                     show_win(player_turn)
             else:
                 break
-    #### END - WIN CHECK SECTION
+    #### END - WIN CHECK SECTION ####
 
 player_turn = 1
+
+
 def main():
     global player_turn, player
     player = ["X", "O"]
@@ -175,11 +177,11 @@ def main():
         print(f"{RED}{player[player_turn]}{RESET}'s turn.")
 
     while True:
-        selected_col = input("Enter the slot's column number: ") # [!] 1-indexed
+        selected_col = input("Enter the column number: ")  # [!] 1-indexed
         try:
             selected_col = int(selected_col)
             while selected_col not in range(1, len(board[0]) + 1):
-                selected_col = int(input("Invalid entry. Enter the slot's column number: "))
+                selected_col = int(input("Invalid entry. Enter the column number: "))
             break
         except ValueError:
             print("Only enter a number.")
@@ -188,7 +190,7 @@ def main():
 
 
 game_in_progress = True
-while(game_in_progress):
+while (game_in_progress):
 
     if not board_setup:
         setup_board(6, 7)
