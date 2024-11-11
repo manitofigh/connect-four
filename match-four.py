@@ -51,7 +51,7 @@ def update_board(col, turn):
                 cur_chosen_row = i
                 break
 
-        # Falling animation
+        # start - falling animation
         for j in range(0, cur_chosen_row):
             if turn == 0:
                 board[j][col] = 'x'
@@ -196,7 +196,7 @@ def main():
         try:
             selected_col = int(selected_col)
             while selected_col not in range(1, len(board[0]) + 1):
-                selected_col = int(input("Invalid entry. Enter the column number: "))
+                selected_col = int(input("Invalid range. Enter the column number: "))
             break
         except ValueError:
             print("Only enter a number.")
@@ -208,15 +208,16 @@ game_in_progress = True
 global n_cols
 while (game_in_progress):
     if not board_setup:
+        os.system("clear")
         while True:
             try:
-                n_rows = int(input("How many rows for the board? (min 4, max 9)"))
+                n_rows = int(input("How many rows for the board (min 4, max 9)? "))
                 while n_rows < 4 or n_rows > 9:
-                    n_rows = int(input("How many rows for the board? (min 4, max 9)"))
+                    n_rows = int(input("Invalid range. How many rows for the board (min 4, max 9)? "))
 
-                n_cols = int(input("How many columns for the board? (min 4, max 9)"))
+                n_cols = int(input("How many columns for the board (min 4, max 9)? "))
                 while n_cols < 4 or n_cols > 9:
-                    n_cols = int(input("How many columns for the board? (min 4, max 9)"))
+                    n_cols = int(input("Invalid range. How many columns for the board (min 4, max 9)? "))
 
                 break
             except ValueError:
