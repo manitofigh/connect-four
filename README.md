@@ -9,5 +9,4 @@ python3 match-four.py
 ```
 
 > [!WARNING]
-> The `os` library is imported to clear the terminal, and has been tested on Unix/Linux systems.
-> However, this has not been tested on Windows systems.
+> The `os` library is imported to clear the terminal, and has been tested on Unix/Linux systems **only**.
