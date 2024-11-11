@@ -41,19 +41,19 @@ def show_win(player_turn):
         print(f"{RED}{player[player_turn]}{RESET} Won!")
 
 def update_board(col, turn):
-    global board, game_in_progress, player, player_turn, free_row
+    global board, game_in_progress, player, player_turn, cur_chosen_row
     col -= 1 # converting user's 1-indexed number to 0-indexed
 
     if board[0][col] == ' ':
         for i in range(len(board) - 1, -1, -1):
             if board[i][col] == ' ':
                 if turn == 0:
-                    free_row = i
-                    board[free_row][col] = 'x'
+                    cur_chosen_row = i
+                    board[cur_chosen_row][col] = 'x'
                     break
                 else:
-                    free_row = i
-                    board[free_row][col] = 'o'
+                    cur_chosen_row = i
+                    board[cur_chosen_row][col] = 'o'
                     break
     else:
         print(f"{ORANGE}[!]{RESET} Column already full. Cannot insert.")
@@ -66,9 +66,9 @@ def update_board(col, turn):
     # vertical - if 4 are on top of each other
     cont = 0 # continuous match counter of the signs (x/o)
     # make sure 3 rows below is not out of bound
-    if free_row + 3 <= len(board) - 1:
-        for i in range(free_row, free_row + 4): # check until 3 rows below where we just inserted  
-            if board[i][col] == board[free_row][col]:
+    if cur_chosen_row + 3 <= len(board) - 1:
+        for i in range(cur_chosen_row, cur_chosen_row + 4): # check until 3 rows below where we just inserted  
+            if board[i][col] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
                     print_board(board)
@@ -82,7 +82,7 @@ def update_board(col, turn):
     cont = 0
     if col + 3 <= (len(board[0]) - 1):
         for i in range(col, col + 4):
-            if board[free_row][i] == board[free_row][col]:
+            if board[cur_chosen_row][i] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
                     print_board(board)
@@ -95,7 +95,7 @@ def update_board(col, turn):
     cont = 0
     if col - 3 >= 0:
         for i in range (col, col - 4, -1):
-            if board[free_row][i] == board[free_row][col]:
+            if board[cur_chosen_row][i] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
                     print_board(board)
@@ -106,10 +106,10 @@ def update_board(col, turn):
 
     # diagonal - check bottom left of what was just placed
     cont = 0
-    if col - 3 >= 0 and free_row + 3 <= len(board) - 1:
-        for i in range(free_row, free_row + 4):
-            # (i - free_row) is the iteration number so that col could be calculated
-            if board[i][col - (i - free_row)] == board[free_row][col]:
+    if col - 3 >= 0 and cur_chosen_row + 3 <= len(board) - 1:
+        for i in range(cur_chosen_row, cur_chosen_row + 4):
+            # (i - cur_chosen_row) is the iteration number so that col could be calculated
+            if board[i][col - (i - cur_chosen_row)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
                     print_board(board)
@@ -120,11 +120,11 @@ def update_board(col, turn):
 
     # diagonal - top right of what was just placed
     cont = 0
-    if col + 3 <= len(board[0]) - 1 and free_row - 3 >= 0:
-        for i in range(free_row, free_row - 4, -1):
-            # (i - free_row) is the iteration number so that col could be calculated
+    if col + 3 <= len(board[0]) - 1 and cur_chosen_row - 3 >= 0:
+        for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
+            # (i - cur_chosen_row) is the iteration number so that col could be calculated
             # in this case col + ... so that we go forward in the column (from left->right)
-            if board[i][col + (free_row - i)] == board[free_row][col]:
+            if board[i][col + (cur_chosen_row - i)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
                     print_board(board)
@@ -135,11 +135,11 @@ def update_board(col, turn):
 
     # diagonal - check bottom right of what we just placed
     cont = 0
-    if col + 3 <= len(board[0]) - 1 and free_row + 3 <= len(board) - 1:
-        for i in range(free_row, free_row + 4):
-            # (i - free_row) is the iteration number so that col could be calculated
+    if col + 3 <= len(board[0]) - 1 and cur_chosen_row + 3 <= len(board) - 1:
+        for i in range(cur_chosen_row, cur_chosen_row + 4):
+            # (i - cur_chosen_row) is the iteration number so that col could be calculated
             # in this case col + ... so that we go forward in the column (from left->right)
-            if board[i][col + (i - free_row)] == board[free_row][col]:
+            if board[i][col + (i - cur_chosen_row)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
                     print_board(board)
@@ -150,11 +150,11 @@ def update_board(col, turn):
 
     # diagonal - top left of where we just placed
     cont = 0
-    if col - 3 >= 0 and free_row - 3 >= 0:
-        for i in range(free_row, free_row - 4, -1):
-            # (i - free_row) is the iteration number so that col could be calculated
+    if col - 3 >= 0 and cur_chosen_row - 3 >= 0:
+        for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
+            # (i - cur_chosen_row) is the iteration number so that col could be calculated
             # in this case col + ... so that we go forward in the column (from left->right)
-            if board[i][col - (free_row - i)] == board[free_row][col]:
+            if board[i][col - (cur_chosen_row - i)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
                     print_board(board)
