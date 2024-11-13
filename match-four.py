@@ -1,11 +1,10 @@
-# WARNING: the terminal cleaning is only implemented for the macos terminal. Needs check on windows.
 import os # to clean the terminal screen
 from time import sleep
 
-GREEN = '\033[92m' # for x
+GRN = '\033[92m' # for x
 RED = '\033[91m' # for o
-ORANGE = '\033[38;5;215m' # for [!]
-RESET = '\033[0m'
+ORNG = '\033[38;5;215m' # for [!]
+RST = '\033[0m'
 
 # game board arr: [[], [], [], ...] -> each [] being a row
 # we only want to set it up once in main(). If set up more, it would override vals to []
@@ -28,18 +27,26 @@ def print_board(board_array):
     for i in board: # each row
         for j in i: # each column of each row
             if j == 'x':
-                print(f"| [{GREEN}{j}{RESET}] ", end="")
+                print(f"| [{GRN}{j}{RST}] ", end="")
+            elif j == 'X':
+                j = 'x'
+                print(f"| {ORNG}[{RST}{GRN}{j}{RST}{ORNG}]{RST} ", end="")
+            elif j == 'o':
+                print(f"| [{RED}{j}{RST}] ", end="")
+            elif j == 'O':
+                j = 'o'
+                print(f"| {ORNG}[{RST}{RED}{j}{RST}{ORNG}]{RST} ", end="")
             else:
-                print(f"| [{RED}{j}{RESET}] ", end="")
+                print(f"| [{j}] ", end="")
         print(f"|") # for the closing of each row
     print(separator)
     print()
 
 def show_win(player_turn):
     if player_turn == 0:
-        print(f"{GREEN}{player[player_turn]}{RESET} Won!")
+        print(f"{GRN}{player[player_turn]}{RST} Won!")
     else:
-        print(f"{RED}{player[player_turn]}{RESET} Won!")
+        print(f"{RED}{player[player_turn]}{RST} Won!")
 
 def update_board(col, turn):
     global board, game_in_progress, player, player_turn, cur_chosen_row
@@ -71,7 +78,7 @@ def update_board(col, turn):
             board[cur_chosen_row][col] = 'o'
 
     else:
-        print(f"{ORANGE}[!]{RESET} Column already full. Cannot insert.")
+        print(f"{ORNG}[!]{RST} Column already full. Cannot insert.")
         # since main() is gonna flip the player turn, we do it once prior so that it undos it.
         # because if player 1 makes a mistake, we still want them to play their round.
         player_turn = not player_turn
@@ -86,6 +93,11 @@ def update_board(col, turn):
             if board[i][col] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    for i in range(cur_chosen_row, cur_chosen_row + 4):
+                        if turn == 0:
+                            board[i][col] = "X"
+                        else:
+                            board[i][col]= "O"
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
@@ -187,13 +199,16 @@ def main():
     player = ["X", "O"]
     player_turn = not player_turn
     if player_turn == 0:
-        print(f"{GREEN}{player[player_turn]}{RESET}'s turn.")
+        print(f"{GRN}{player[player_turn]}{RST}'s turn.")
     else:
-        print(f"{RED}{player[player_turn]}{RESET}'s turn.")
+        print(f"{RED}{player[player_turn]}{RST}'s turn.")
+    print(f"Press {RED}q{RST} to {RED}quit{RST}")
 
     while True:
         selected_col = input("Enter the column number: ")  # [!] 1-indexed
         try:
+            if selected_col == 'q':
+                exit()
             selected_col = int(selected_col)
             while selected_col not in range(1, len(board[0]) + 1):
                 selected_col = int(input("Invalid range. Enter the column number: "))
@@ -211,9 +226,9 @@ while (game_in_progress):
         os.system("clear")
         while True:
             try:
-                n_rows = int(input("How many rows for the board (min 4, max 9)? "))
-                while n_rows < 4 or n_rows > 9:
-                    n_rows = int(input("Invalid range. How many rows for the board (min 4, max 9)? "))
+                n_rows = int(input("How many rows for the board (min 4, max 18)? "))
+                while n_rows < 4 or n_rows > 18:
+                    n_rows = int(input("Invalid range. How many rows for the board (min 4, max 18)? "))
 
                 n_cols = int(input("How many columns for the board (min 4, max 9)? "))
                 while n_cols < 4 or n_cols > 9:
