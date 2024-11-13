@@ -243,16 +243,16 @@ def main():
         print(f"{GRN}{player[player_turn]}{RST}'s turn.")
     else:
         print(f"{RED}{player[player_turn]}{RST}'s turn.")
-    print(f"Press {RED}q{RST} to {RED}quit{RST}")
+    print(f"Press {RED}q{RST} to quit.")
 
     while True:
-        selected_col = input("Enter the column number: ")  # [!] 1-indexed
+        selected_col = input("Choose a column number: ")  # [!] 1-indexed
         try:
             if selected_col == 'q':
                 exit()
             selected_col = int(selected_col)
             while selected_col not in range(1, len(board[0]) + 1):
-                selected_col = int(input("Invalid range. Enter the column number: "))
+                selected_col = int(input("Invalid range. Choose a column number: "))
             break
         except ValueError:
             print("Only enter a number.")
