@@ -28,11 +28,13 @@ def print_board(board_array):
         for j in i: # each column of each row
             if j == 'x':
                 print(f"| [{GRN}{j}{RST}] ", end="")
+            # The X-es that conenct four are detected in caps
             elif j == 'X':
                 j = 'x'
                 print(f"| {ORNG}[{RST}{GRN}{j}{RST}{ORNG}]{RST} ", end="")
             elif j == 'o':
                 print(f"| [{RED}{j}{RST}] ", end="")
+            # The O-es that conenct four are detected in caps
             elif j == 'O':
                 j = 'o'
                 print(f"| {ORNG}[{RST}{RED}{j}{RST}{ORNG}]{RST} ", end="")
@@ -93,6 +95,9 @@ def update_board(col, turn):
             if board[i][col] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    # capital x/o would are the winning pieces
+                    # when printing the board, they'd be printed with
+                    # golden brackets to show the winning path
                     for i in range(cur_chosen_row, cur_chosen_row + 4):
                         if turn == 0:
                             board[i][col] = "X"
@@ -105,13 +110,19 @@ def update_board(col, turn):
                 break
 
     # horizontal win (if you place x on the left of 3 other elements e.g: X,x,x,x (X just placed))
-    # we did col -= 1, hence board[0] - 1 to convert both to 0-indexed
+    # we did col -= 1, hence board[0] - 1 to "0-index" both
     cont = 0
     if col + 3 <= (len(board[0]) - 1):
         for i in range(col, col + 4):
             if board[cur_chosen_row][i] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    for i in range(col, col + 4):
+                        if turn == 0:
+                            board[cur_chosen_row][i] = "X"
+                        else:
+                            board[cur_chosen_row][i]= "O"
+
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
@@ -125,6 +136,12 @@ def update_board(col, turn):
             if board[cur_chosen_row][i] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    for i in range(col, col - 4, -1):
+                        if turn == 0:
+                            board[cur_chosen_row][i] = "X"
+                        else:
+                            board[cur_chosen_row][i]= "O"
+
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
@@ -139,6 +156,12 @@ def update_board(col, turn):
             if board[i][col - (i - cur_chosen_row)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    for i in range(cur_chosen_row, cur_chosen_row + 4):
+                        if turn == 0:
+                            board[i][col - (i - cur_chosen_row)] = 'X'
+                        else:
+                            board[i][col - (i - cur_chosen_row)] = 'O'
+
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
@@ -154,6 +177,12 @@ def update_board(col, turn):
             if board[i][col + (cur_chosen_row - i)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
+                        if turn == 0:
+                            board[i][col + (cur_chosen_row - i)] = 'X'
+                        else:
+                            board[i][col + (cur_chosen_row - i)] = 'O'
+
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
@@ -169,6 +198,12 @@ def update_board(col, turn):
             if board[i][col + (i - cur_chosen_row)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    for i in range(cur_chosen_row, cur_chosen_row + 4):
+                        if turn == 0:
+                            board[i][col + (i - cur_chosen_row)] = 'X'
+                        else:
+                            board[i][col + (i - cur_chosen_row)] = 'O'
+
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
@@ -184,6 +219,12 @@ def update_board(col, turn):
             if board[i][col - (cur_chosen_row - i)] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 4:
+                    for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
+                        if turn == 0:
+                            board[i][col - (cur_chosen_row - i)] = 'X'
+                        else:
+                            board[i][col - (cur_chosen_row - i)] = 'O'
+
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
