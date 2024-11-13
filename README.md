@@ -3,9 +3,9 @@
 You need `git` installed.
 
 ```bash
-git clone https://github.com/manitofigh/match-four.git
-cd match-four
-python3 match-four.py
+git clone https://github.com/manitofigh/connect-four.git
+cd connect-four
+python3 connect-four.py
 ```
 
 > [!WARNING]
