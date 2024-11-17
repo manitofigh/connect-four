@@ -60,7 +60,7 @@ def update_board(col, turn):
                 cur_chosen_row = i
                 break
 
-        # start - falling animation
+        # START - falling animation
         for j in range(0, cur_chosen_row):
             if turn == 0:
                 board[j][col] = 'x'
@@ -72,12 +72,9 @@ def update_board(col, turn):
                 print_board(board)
                 sleep(0.05)
                 board[j][col] = ' '
-        # end - falling animation
+        # END - falling animation
 
-        if turn == 0:
-            board[cur_chosen_row][col] = 'x'
-        else:
-            board[cur_chosen_row][col] = 'o'
+        board[cur_chosen_row][col] = 'x' if turn == 0 else 'o'
 
     else:
         print(f"{ORNG}[!]{RST} Column already full. Cannot insert.")
@@ -99,10 +96,7 @@ def update_board(col, turn):
                     # when printing the board, they'd be printed with
                     # golden brackets to show the winning path
                     for i in range(cur_chosen_row, cur_chosen_row + 4):
-                        if turn == 0:
-                            board[i][col] = "X"
-                        else:
-                            board[i][col]= "O"
+                        board[i][col] = board[i][col].upper()
                     print_board(board)
                     game_in_progress = False
                     show_win(player_turn)
@@ -112,24 +106,30 @@ def update_board(col, turn):
     # START - horizontal win check
     # There is always the chance for a placement to be a horizontal win, so no `if` checks
     # check both ways from where dropped until the opposite sign found, and count continuity
-    # right side cap, either the edge (last col#) or 3 to the right
-    r_cap = n_cols if col + 3 >= n_cols else col + 4 # !careful: r_cap is 1-indexed
-    l_cap = -1 if col - 3 <= 0 else col - 4 # !careful: l_cap is 1-indexed
+    r_cap = 3 if n_cols - (col+1) >= 3 else n_cols - (col+1)
+    l_cap = 3 if col >= 2 else col+1
     cont = 0
-    for i in range(col + 1, r_cap): # r_cap already 1-indexed so already takes into account `range`'s exclusiveness
-        if board[cur_chosen_row][i] == board[cur_chosen_row][col]:
+    for i in range(1, r_cap + 1):
+        if r_cap != 0 and board[cur_chosen_row][col + i] == board[cur_chosen_row][col]:
             cont += 1
             if cont == 3:
+                for i in range(0, r_cap + 1):
+                    board[cur_chosen_row][col + i] = board[cur_chosen_row][col + i].upper()
                 print_board(board)
                 show_win(player_turn)
                 game_in_progress = False
         else:
             break
 
-    for i in range(col - 1, l_cap, -1):
-        if board[cur_chosen_row][i] == board[cur_chosen_row][col]:
+    for i in range(1, l_cap + 1):
+        if l_cap != 0 and board[cur_chosen_row][col - i] == board[cur_chosen_row][col]:
             cont += 1
             if cont == 3:
+                for i in range(0, l_cap + 1):
+                    board[cur_chosen_row][col - i] = board[cur_chosen_row][col - i].upper()
+                if r_cap != 0:
+                    for i in range(0, r_cap + 1):
+                        board[cur_chosen_row][col + i] = board[cur_chosen_row][col + i].upper()
                 print_board(board)
                 show_win(player_turn)
                 game_in_progress = False
@@ -137,107 +137,79 @@ def update_board(col, turn):
             break
     # END - horizontal win check
 
-    # START - diagonal: bottom left to top right win check
-    t_cap = -1 if cur_chosen_row - 3 <= 0 else cur_chosen_row - 3 # top cap
-    b_cap = n_rows if cur_chosen_row + 3 >= n_rows else n_rows + 3 # bottom cap
-    tr_cap = 
-    print(f"top right cap: {tr_cap}")
-    sleep(5)
-    bl_cap = min(b_cap, l_cap) # bottom left cap
-    print(f"bottom left cap: {bl_cap}")
-    sleep(5)
-    cont = 0
+    # START - diagonal setup
+    b_cap = 3 if ((n_rows - 1) - cur_chosen_row) >= 3 else ((n_rows - 1) - cur_chosen_row)
+    t_cap = 3 if cur_chosen_row - 3 >= 0 else cur_chosen_row
+    tr_cap = min(t_cap, r_cap)
+    bl_cap = min(b_cap, l_cap)
+    tl_cap = min(t_cap, l_cap)
+    br_cap = min(b_cap, r_cap)
+
+    # START - diagonal: TR to BL
     if tr_cap + bl_cap >= 3:
-        # checking bottom left
-        for i in range(cur_chosen_row, cur_chosen_row + bl_cap):
-            n_iter = i - cur_chosen_row
-            if board[i][col - iter] == board[i][col]:
+        cont = 0
+        for i in range(1, tr_cap + 1):
+            if tr_cap != 0 and board[cur_chosen_row - i][col + i] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 3:
+                    for i in range(0, tr_cap + 1):
+                        board[cur_chosen_row - i][col + i] = board[cur_chosen_row - i][col + i].upper()
                     print_board(board)
                     show_win(player_turn)
                     game_in_progress = False
-                else:
-                    break
+            else:
+                break
 
-        # checking top right
-        for i in range(cur_chosen_row, cur_chosen_row - tr_cap, -1):
-            n_iter = cur_chosen_row - i
-            if board[i][col + n_iter] == board[i][cur_chosen_row]:
+        # go BL next
+        for i in range(1, bl_cap + 1):
+            if bl_cap != 0 and board[cur_chosen_row + i][col - i] == board[cur_chosen_row][col]:
                 cont += 1
                 if cont == 3:
+                    for i in range(0, bl_cap + 1):
+                        board[cur_chosen_row + i][col - i] = board[cur_chosen_row + i][col - i].upper()
+                    if tr_cap != 0:
+                        for i in range(0, tr_cap + 1):
+                            board[cur_chosen_row - i][col + i] = board[cur_chosen_row - i][col + i].upper()
+                    game_in_progress = False
                     print_board(board)
                     show_win(player_turn)
-                    game_in_progress = False
             else:
                 break
+    # END - diagonal: TR to BL
 
-
-
-    # START - diagonal: top left to bottom right win check
+    # START - diagonal: TL to BR
     cont = 0
-    if col + 3 <= len(board[0]) - 1 and cur_chosen_row - 3 >= 0:
-        for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
-            # (i - cur_chosen_row) is the iteration number so that col could be calculated
-            # in this case col + ... so that we go forward in the column (from left->right)
-            if board[i][col + (cur_chosen_row - i)] == board[cur_chosen_row][col]:
+    if tl_cap + br_cap >= 3:
+        for i in range(1, tl_cap + 1):
+            if tl_cap != 0 and board[cur_chosen_row - i][col - i] == board[cur_chosen_row][col]:
                 cont += 1
-                if cont == 4:
-                    for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
-                        if turn == 0:
-                            board[i][col + (cur_chosen_row - i)] = 'X'
-                        else:
-                            board[i][col + (cur_chosen_row - i)] = 'O'
-
-                    print_board(board)
+                if cont == 3:
+                    for i in range(0, tl_cap + 1):
+                        board[cur_chosen_row - i][col - i] = board[cur_chosen_row - i][col - i].upper()
                     game_in_progress = False
+                    print_board(board)
                     show_win(player_turn)
             else:
                 break
 
-    # diagonal - check bottom right of what we just placed
-    cont = 0
-    if col + 3 <= len(board[0]) - 1 and cur_chosen_row + 3 <= len(board) - 1:
-        for i in range(cur_chosen_row, cur_chosen_row + 4):
-            # (i - cur_chosen_row) is the iteration number so that col could be calculated
-            # in this case col + ... so that we go forward in the column (from left->right)
-            if board[i][col + (i - cur_chosen_row)] == board[cur_chosen_row][col]:
+        for i in range(1, br_cap + 1):
+            if br_cap != 0 and board[cur_chosen_row + 1][col + 1] == board[cur_chosen_row][col]:
                 cont += 1
-                if cont == 4:
-                    for i in range(cur_chosen_row, cur_chosen_row + 4):
-                        if turn == 0:
-                            board[i][col + (i - cur_chosen_row)] = 'X'
-                        else:
-                            board[i][col + (i - cur_chosen_row)] = 'O'
+                if cont == 3:
+                    for i in range(0, br_cap + 1):
+                        board[cur_chosen_row + i][col + i] = board[cur_chosen_row - i][col - i].upper()
+                    if tl_cap != 0:
+                        for i in range(0, tl_cap + 1):
+                            board[cur_chosen_row - i][col - i] = board[cur_chosen_row - i][col - i].upper()
 
-                    print_board(board)
                     game_in_progress = False
+                    print_board(board)
                     show_win(player_turn)
             else:
                 break
+    # END - diagonal: TL to BR
 
-    # diagonal - top left of where we just placed
-    cont = 0
-    if col - 3 >= 0 and cur_chosen_row - 3 >= 0:
-        for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
-            # (i - cur_chosen_row) is the iteration number so that col could be calculated
-            # in this case col + ... so that we go forward in the column (from left->right)
-            if board[i][col - (cur_chosen_row - i)] == board[cur_chosen_row][col]:
-                cont += 1
-                if cont == 4:
-                    for i in range(cur_chosen_row, cur_chosen_row - 4, -1):
-                        if turn == 0:
-                            board[i][col - (cur_chosen_row - i)] = 'X'
-                        else:
-                            board[i][col - (cur_chosen_row - i)] = 'O'
-
-                    print_board(board)
-                    game_in_progress = False
-                    show_win(player_turn)
-            else:
-                break
-
-    # Draw
+    # START - Draw
     filled_col = 0
     for i in range(0, n_cols):
         if board[0][i] != ' ':
@@ -246,13 +218,11 @@ def update_board(col, turn):
             print_board(board)
             print("Draw!")
             game_in_progress = False
+    # END - Draw
 
     #### END - WIN CHECK SECTION ####
 
-
-
 player_turn = 1
-
 
 def main():
     global player_turn, player
