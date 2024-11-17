@@ -1,6 +1,6 @@
 # Setup
 
-You need `git` installed.
+You need `git` installed for the first command.
 
 ```bash
 git clone https://github.com/manitofigh/connect-four.git
